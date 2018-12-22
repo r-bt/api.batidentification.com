@@ -6,9 +6,12 @@
   require_once("server.php");
   require_once("libraries/dbconnect.php");
 
+  $modified = false;
+
   function modifySQL(string $inital, string $append, array $params){
 
-    global $paramType, $a_params;
+    global $paramType, $a_params, $modified;
+    $modified = true;
     $paramsInQuery = "";
 
     $sql = $inital . ' ' . (strpos($inital, "WHERE") == false ? "WHERE " : "AND ") . $append;
@@ -40,7 +43,9 @@
 
   $sql = "Select id, lat, lng, address, classification FROM bat_calls";
 
-  //If the user has set a range
+  /////HEADER: Parameters for API
+
+      //If the user has set a range
   if(isset($_POST['range'])){
 
     list($start, $end) = explode(" - ", $_POST['range']);
@@ -49,16 +54,42 @@
 
   }
 
-  //Get if specific species have been set
+      //Get if specific species have been set
   if(isset($_POST['bat_species'])){
 
     $sql = modifySQL($sql, "classification IN ({%1%})", $_POST['bat_species']);
 
   }
 
+    //If location bounds set
+  if(isset($_POST['lat']) && isset($_POST['lon']) && isset($_POST['radius'])){
+
+    $preparedParams = [$_POST['lat'], $_POST['lon'], $_POST['lat'], $_POST['radius']];
+
+    for($i = 0; $i < count($preparedParams); $i++){
+      $preparedParams[$i] = floatval($preparedParams[$i]);
+      if(!$preparedParams[$i]){
+         echo('{"error": "invalid_params", "error_description": "Latitude, longitude and radius all need to be integers"}');
+      }
+    }
+
+    $sql = modifySQL($sql, "
+        ( 3959
+          * acos( cos( radians(?) )
+                  * cos(  radians( lat )   )
+                  * cos(  radians( lng ) - radians(?) )
+                + sin( radians(?) )
+                  * sin( radians( lat ) )
+                )
+        ) < ?", $preparedParams);
+
+  }
+
+  //HEADER: Submit query
+
   $stmt = $connection->prepare($sql);
 
-  if(isset($_POST['range']) || isset($_POST['bat_species'])){
+  if($modified){
     call_user_func_array(array($stmt, 'bind_param'), $a_params);
   }
 
