@@ -6,6 +6,27 @@
   require_once("server.php");
   require_once("libraries/dbconnect.php");
 
+  function modifySQL(string $inital, string $append, array $params){
+
+    global $paramType, $a_params;
+    $paramsInQuery = "";
+
+    $sql = $inital . ' ' . (strpos($inital, "WHERE") == false ? "WHERE " : "AND ") . $append;
+
+    for($i = 0; $i < count($params); $i++){
+
+      $paramType .= gettype($params[$i])[0];
+      $a_params[] = &$params[$i];
+      $paramsInQuery .= ($i == 0 ? "?" : ",?");
+
+    }
+
+    $sql = str_replace("{%1%}", $paramsInQuery, $sql);
+
+    return $sql;
+
+  }
+
   // if(!$server->verifyResourceRequest(OAuth2\Request::createFromGlobals())){
   //   $server->getResponse()->send();
   //   die;
@@ -15,51 +36,23 @@
   $a_params = array();
   $paramType = "";
 
-  $sql = "Select id, location, address, classification FROM bat_calls";
+  $a_params[] = &$paramType;
+
+  $sql = "Select id, lat, lng, address, classification FROM bat_calls";
 
   //If the user has set a range
   if(isset($_POST['range'])){
 
     list($start, $end) = explode(" - ", $_POST['range']);
 
-    $sql .= " WHERE date(date_recorded) >= ? AND date(date_recorded) <= ?";
-
-    $paramType = "ss";
-
-    $a_params[] = &$paramType;
-    $a_params[] = &$start;
-    $a_params[] = &$end;
+    $sql = modifySQL($sql, "date(date_recorded) >= ? AND date(date_recorded) <= ?", [$start, $end]);
 
   }
 
   //Get if specific species have been set
   if(isset($_POST['bat_species'])){
 
-    $classParams = "?";
-    $paramType .= "s";
-
-    for($i = 1; $i < count($_POST['bat_species']); $i++){
-
-      $classParams .= ", ?";
-      $paramType .= "s";
-
-    }
-
-    for($i = 0; $i < count($_POST['bat_species']); $i++){
-
-      $a_params[] = &$_POST['bat_species'][$i];
-
-    }
-
-    if(isset($_POST['range'])){
-
-      $sql .= " AND classification IN ({$classParams})";
-
-    }else{
-
-      $sql .= " WHERE classification IN ({$classParams})";
-
-    }
+    $sql = modifySQL($sql, "classification IN ({%1%})", $_POST['bat_species']);
 
   }
 
@@ -71,14 +64,11 @@
 
   $stmt->execute();
 
-  $stmt->bind_result($id, $location, $address, $classification);
+  $stmt->bind_result($id, $lat, $lng, $address, $classification);
 
   while($stmt->fetch()){
 
-     list($lat, $lng) = explode(", ", $location);
-
      $classification = ucwords(str_replace("_", " ", $classification));
-
 
      $batCall = new stdClass();
      $batCall->id = $id;
