@@ -46,25 +46,27 @@
   /////HEADER: Parameters for API
 
       //If the user has set a range
-  if(isset($_POST['range'])){
+  if(isset($_GET['range'])){
 
-    list($start, $end) = explode(" - ", $_POST['range']);
+    list($start, $end) = explode(" - ", $_GET['range']);
 
     $sql = modifySQL($sql, "date(date_recorded) >= ? AND date(date_recorded) <= ?", [$start, $end]);
 
   }
 
       //Get if specific species have been set
-  if(isset($_POST['bat_species'])){
+  if(isset($_GET['bat_species'])){
 
-    $sql = modifySQL($sql, "classification IN ({%1%})", $_POST['bat_species']);
+    $species = array_map('trim', explode(',', $_GET['bat_species']));
+
+    $sql = modifySQL($sql, "classification IN ({%1%})", $species);
 
   }
 
     //If location bounds set
-  if(isset($_POST['lat']) && isset($_POST['lon']) && isset($_POST['radius'])){
+  if(isset($_GET['lat']) && isset($_GET['lon']) && isset($_GET['radius'])){
 
-    $preparedParams = [$_POST['lat'], $_POST['lon'], $_POST['lat'], $_POST['radius']];
+    $preparedParams = [$_GET['lat'], $_GET['lon'], $_GET['lat'], $_GET['radius']];
 
     for($i = 0; $i < count($preparedParams); $i++){
       $preparedParams[$i] = floatval($preparedParams[$i]);
