@@ -1,6 +1,6 @@
 <?php
 
-  require_once 'vendor/autoload.php';
+  require_once '../vendor/autoload.php';
 
   $CLIENT_ID = '12798888631-oaihc82j00ltkqget4a4jnscg2np3m0u.apps.googleusercontent.com';
 

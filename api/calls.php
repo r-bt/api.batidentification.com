@@ -4,7 +4,7 @@
   header("Access-Control-Allow-Origin: *");
 
   require_once("server.php");
-  require_once("libraries/dbconnect.php");
+  require_once("../libraries/dbconnect.php");
 
   $modified = false;
 
@@ -41,7 +41,7 @@
 
   $a_params[] = &$paramType;
 
-  $sql = "Select id, lat, lng, address, classification FROM bat_calls";
+  $sql = "Select id, lat, lng, address, classification, call_url FROM bat_calls";
 
   /////HEADER: Parameters for API
 
@@ -55,9 +55,9 @@
   }
 
       //Get if specific species have been set
-  if(isset($_GET['bat_species'])){
+  if(isset($_GET['species'])){
 
-    $species = array_map('trim', explode(',', $_GET['bat_species']));
+    $species = array_map('trim', explode(',', $_GET['species']));
 
     $sql = modifySQL($sql, "classification IN ({%1%})", $species);
 
@@ -97,7 +97,7 @@
 
   $stmt->execute();
 
-  $stmt->bind_result($id, $lat, $lng, $address, $classification);
+  $stmt->bind_result($id, $lat, $lng, $address, $classification, $call_url);
 
   while($stmt->fetch()){
 
@@ -109,6 +109,7 @@
      $batCall->lat = $lat;
      $batCall->lng = $lng;
      $batCall->species = $classification;
+     $batCall->url = "https://batidentification.com/" . $call_url;
      array_push($batCalls, $batCall);
 
   }
