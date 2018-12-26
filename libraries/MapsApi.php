@@ -7,11 +7,9 @@
       $this->key = "An4gVlk9Jm3GbYcxcYw8pBj19n9n_EamCf8HLP7HdCgqeadvW2Q-7M60rEQZrgqL";
     }
 
-    function addressFromCords($coordinates){
+    function addressFromCords($lat, $lon){
 
-      $coordinates = str_replace(" ", "", $coordinates);
-
-      $queryURL = $this->base_url . "{$coordinates}?o=json&key={$this->key}";
+      $queryURL = $this->base_url . "{$lat},{$lon}?o=json&key={$this->key}";
 
       $response = file_get_contents($queryURL);
 
