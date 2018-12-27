@@ -47,15 +47,15 @@
 
   }
 
-  function validateLon($lon){
+  function validateLng($lng){
 
-    return preg_match("/^-?([0-1]?[0-7]\d?\.\d+|180)$/", $lon);
+    return preg_match("/^-?([0-1]?[0-7]\d?\.\d+|180)$/", $lng);
 
   }
 
   //HEADER: Validate all the data
 
-  if(!isset($_FILES["bat_call"]) || !isset($_POST['date_recorded']) || !isset($_POST['lat']) || !isset($_POST['lon'])){
+  if(!isset($_FILES["bat_call"]) || !isset($_POST['date_recorded']) || !isset($_POST['lat']) || !isset($_POST['lng'])){
 
     http_response_code(400);
     die('{"error": "insufficent_data", "error_description": "Sorry, some data was missing please try again"}');
@@ -69,10 +69,10 @@
 
   }
 
-  if(!validateLat($_POST['lat']) || !validateLon($_POST['lon'])){
+  if(!validateLat($_POST['lat']) || !validateLng($_POST['lng'])){
 
     http_response_code(400);
-    die('{"error": "invalid_data", "error_description": "Please insert a valid latitude and longitude pair"}');
+    die('{"error": "invalid_data", "error_description": "Please insert a valid latitude and lnggitude pair"}');
 
   }
 
@@ -83,11 +83,11 @@
 
   }
 
-  //HEADER: Get address form Lat / Lon pair
+  //HEADER: Get address form Lat / lng pair
 
   $mapsAPI = new MapsAPI();
   try{
-    $address = $mapsAPI->addressFromCords($_POST['lat'], $_POST['lon']);
+    $address = $mapsAPI->addressFromCords($_POST['lat'], $_POST['lng']);
   }catch (Exception $e){
     $address = "Unknown";
   }
@@ -106,17 +106,14 @@
 
   $new_file = $uploadDir . 'original.wav';
 
-  var_dump($new_file);
-
   if(mkdir($uploadDir, 0777, true) && move_uploaded_file($_FILES["bat_call"]["tmp_name"], $new_file)){
 
     $stmt = $connection->prepare("INSERT INTO bat_calls (call_url, user_id, date_added, date_recorded, lat, lng, address) VALUES (?, ?, NOW(), ?, ?, ?, ?)");
     $folderDir = "bat_calls/" . $folderName . '/';
-    var_dump($connection->error);
-    $stmt->bind_param("sisiis", $folderDir, $token['user_id'], $date_recorded, $_POST['lat'], $_POST['lon'], $address);
+    $stmt->bind_param("sisdds", $folderDir, $token['user_id'], $date_recorded, $_POST['lat'], $_POST['lng'], $address);
     $stmt->execute();
 
-    $sql = "INSERT INTO bat_classifications (common_pipistrelle, nathusius_pipistrelle, soprano_pipistrelle, daubentons_bat, natterers_bat, whiskered_bat, brown_long_eared, lesser_Horseshoe, leislers_bat) VALUES (0,0,0,0,0,0,0,0,0)";
+    $sql = "INSERT INTO bat_classifications (common_pipistrelle, nathusius_pipistrelle, soprano_pipistrelle, daubentons_bat, natterers_bat, whiskered_bat, brown_lngg_eared, lesser_Horseshoe, leislers_bat) VALUES (0,0,0,0,0,0,0,0,0)";
     $connection->query($sql);
 
     die('{"success": true}');
