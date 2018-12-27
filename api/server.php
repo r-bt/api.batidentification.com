@@ -1,8 +1,8 @@
 <?php
 
-  require_once("libraries/dbconnect.php");
+  require_once("../libraries/dbconnect.php");
   require_once("BatIdentificationCredentialsInterface.php");
-  require_once 'vendor/autoload.php';
+  require_once '../vendor/autoload.php';
 
   $pdo = new PDO("mysql:host={$dbhost};dbname={$dbname}", $dbuser, $dbpass);
   $storage = new OAuth2\Storage\Pdo($pdo);
