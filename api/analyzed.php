@@ -4,10 +4,11 @@
   require_once("../libraries/dbconnect.php");
   require_once("../libraries/environment.php");
 
-  $dir = $baridentification . 'bat_calls/';
+  $dir = $batidentification . 'bat_calls/';
 
   if(!$server->verifyResourceRequest(OAuth2\Request::createFromGlobals())){
     $server->getResponse()->send();
+    echo('{"error": "access_token", "error_description":"The access token provided is invalid"}');
     die;
   }
 
