@@ -1,12 +1,14 @@
 <?php
 
   require_once("server.php");
-  require_once("libraries/dbconnect.php");
-  $dir = $_SERVER['DOCUMENT_ROOT'].'/../BatIdentification/';
+  require_once("../libraries/dbconnect.php");
+  require_once("../libraries/environment.php");
 
+  $dir = $batidentification . 'bat_calls/';
 
   if(!$server->verifyResourceRequest(OAuth2\Request::createFromGlobals())){
     $server->getResponse()->send();
+    echo('{"error": "access_token", "error_description":"The access token provided is invalid"}');
     die;
   }
 
@@ -47,8 +49,8 @@
 
         if($call_url != NULL){
 
-          $newSpectrogram = $dir . $call_url . '/spectrogram.' . pathinfo($_FILES['spectrogram']['name'], PATHINFO_EXTENSION);
-          $newTimeExpansion = $dir . $call_url . '/time_expansion.' . pathinfo($_FILES['time_expansion']['name'], PATHINFO_EXTENSION);
+          $newSpectrogram = $batidentification . $call_url . '/spectrogram.' . pathinfo($_FILES['spectrogram']['name'], PATHINFO_EXTENSION);
+          $newTimeExpansion = $batidentification . $call_url . '/time_expansion.' . pathinfo($_FILES['time_expansion']['name'], PATHINFO_EXTENSION);
 
           if(move_uploaded_file($_FILES['spectrogram']['tmp_name'], $newSpectrogram)){
 
