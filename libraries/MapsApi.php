@@ -15,7 +15,11 @@
 
       $decoded_response = json_decode($response);
 
-      $formatted = $decoded_response->resourceSets[0]->resources[0]->name;
+      if(count($decoded_response->resourceSets[0]->resources) != 0){
+        $formatted = $decoded_response->resourceSets[0]->resources[0]->name;
+      }else{
+        $formatted = NULL;
+      }
 
       if($formatted != NULL){
         return $formatted;

@@ -1,5 +1,15 @@
 <?php
 
+  // The upload endpoint for calls to be sent to.
+  // Requires the following params:
+  //   -> A file called bat_call
+  //   -> A date date_recorded conforming to Y-m-d G:i:s
+  //   -> A lat coordinate
+  //   -> A lng coordinate
+
+  header("Access-Control-Allow-Origin: *");
+  header("Access-Control-Allow-Headers: authorization");
+
   //HEADER: Import the neccessary files
   require_once("server.php");
   require_once("../libraries/dbconnect.php");
@@ -97,11 +107,12 @@
   $token = $server->getAccessTokenData(OAuth2\Request::createFromGlobals());
   $date_recorded = formatInput($_POST['date_recorded']);
 
+  $rootDir = explode('api.batidentification', __DIR__)[0];
   $folderName = uniqid();
-  $uploadDir = $config["bat_calls"] . $folderName . '/';
+  $uploadDir = $rootDir . $config['bat_calls'] . $folderName . '/';
   while (file_exists($uploadDir) || is_dir($uploadDir)) {
     $folderName = uniqid();
-    $uploadDir = $config["bat_calls"] . $folderName . '/';
+    $uploadDir = $rootDir . $config["bat_calls"] . $folderName . '/';
   }
 
   $new_file = $uploadDir . 'original.wav';

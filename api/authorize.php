@@ -1,13 +1,14 @@
 <?php
 
-  session_set_cookie_params(0, '/', '.batidentification.com');
+  session_name("batidentification");
+  session_set_cookie_params(0, '/', '.batidentification.loc');
   session_start();
 
   $client_name = "";
 
   if(!isset($_SESSION['id'])){
-    $_SESSION['ref'] = 'https://api.batidentification.com/authorize.php?' . $_SERVER['QUERY_STRING'];
-    header("Location: https://batidentification.com/login.php");
+    $_SESSION['ref'] = 'https://api.batidentification.loc/api/authorize?' . $_SERVER['QUERY_STRING'];
+    header("Location: https://batidentification.loc/login.php");
     exit('');
   }
 

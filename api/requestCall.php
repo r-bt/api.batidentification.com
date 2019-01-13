@@ -1,7 +1,7 @@
 <?php
 
   require_once("server.php");
-  require_once("libraries/dbconnect.php");
+  require_once("../libraries/dbconnect.php");
 
   if(!$server->verifyResourceRequest(OAuth2\Request::createFromGlobals())){
     $server->getResponse()->send();
@@ -22,7 +22,7 @@
     $stmt->close();
 
     $call_to_return = array(
-      'call_url' => 'https://batidentification.com/' . $row['call_url'],
+      'call_url' => 'https://batidentification.loc/' . $row['call_url'],
       'identifier' => $identifer
     );
 
