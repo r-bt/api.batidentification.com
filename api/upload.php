@@ -123,8 +123,9 @@
     $folderDir = "bat_calls/" . $folderName . '/';
     $stmt->bind_param("sisdds", $folderDir, $token['user_id'], $date_recorded, $_POST['lat'], $_POST['lng'], $address);
     $stmt->execute();
+    $stmt->close();
 
-    $sql = "INSERT INTO bat_classifications (common_pipistrelle, nathusius_pipistrelle, soprano_pipistrelle, daubentons_bat, natterers_bat, whiskered_bat, brown_lngg_eared, lesser_Horseshoe, leislers_bat) VALUES (0,0,0,0,0,0,0,0,0)";
+    $sql = "INSERT INTO bat_classifications (common_pipistrelle, nathusius_pipistrelle, soprano_pipistrelle, myotis, leislers_bat, brown_long_eared, lesser_horseshoe) VALUES (0,0,0,0,0,0,0)";
     $connection->query($sql);
 
     die('{"success": true}');
