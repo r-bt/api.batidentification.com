@@ -125,7 +125,7 @@
     $stmt->execute();
     $stmt->close();
 
-    $sql = "INSERT INTO bat_classifications (common_pipistrelle, nathusius_pipistrelle, soprano_pipistrelle, myotis, leislers_bat, brown_long_eared, lesser_horseshoe) VALUES (0,0,0,0,0,0,0)";
+    $sql = "INSERT INTO bat_classifications (common_pipistrelle, nathusius_pipistrelle, soprano_pipistrelle, myotis, leislers_bat, brown_long_eared, lesser_horseshoe, unknown) VALUES (0,0,0,0,0,0,0,0)";
     $connection->query($sql);
 
     die('{"success": true}');
