@@ -84,9 +84,7 @@
 
             var input = $(this).serializeArray()
 
-            console.log(input);
-
-            $.get("https://api.batidentification.loc/api/" + input[0].value + "?" + input[1].value, function(data){
+            $.get("https://" + window.location.hostname + "/api/" + input[0].value + "?" + input[1].value, function(data){
 
                 displayData(JSON.stringify(data, null, 1));
 

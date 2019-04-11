@@ -53,13 +53,13 @@
 
   function validateLat($lat){
 
-      return preg_match("/^-?([1-8]\d?\.\d+|90)$/", $lat);
+      return preg_match("/^-?([1-8]?\d?\.?\d+|90)$/", $lat);
 
   }
 
   function validateLng($lng){
 
-    return preg_match("/^-?([0-1]?[0-7]\d?\.\d+|180)$/", $lng);
+    return preg_match("/^-?([0-1]?[0-7]?\d?\.?\d+|180)$$/", $lng);
 
   }
 
@@ -82,7 +82,7 @@
   if(!validateLat($_POST['lat']) || !validateLng($_POST['lng'])){
 
     http_response_code(400);
-    die('{"error": "invalid_data", "error_description": "Please insert a valid latitude and lnggitude pair"}');
+    die('{"error": "invalid_data", "error_description": "Please insert a valid latitude and longitude pair"}');
 
   }
 
