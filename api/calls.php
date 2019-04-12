@@ -41,7 +41,7 @@
 
   $a_params[] = &$paramType;
 
-  $sql = "Select id, lat, lng, address, classification, analyzed, call_url FROM bat_calls WHERE verified = 1";
+  $sql = "Select id, lat, lng, address, classification, analyzed, call_url FROM bat_calls";
 
   /////HEADER: Parameters for API
 

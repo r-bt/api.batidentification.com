@@ -9,7 +9,7 @@
     die;
   }
 
-  $sql = "SELECT id, call_url FROM bat_calls WHERE analysing_id IS NULL AND analyzed != true AND verified = 1";
+  $sql = "SELECT id, call_url FROM bat_calls WHERE analysing_id IS NULL AND analyzed != true";
   $results = $connection->query($sql);
   if($results->num_rows > 0){
 
