@@ -41,7 +41,7 @@
 
   $a_params[] = &$paramType;
 
-  $sql = "Select id, lat, lng, address, classification, call_url FROM bat_calls WHERE verified = 1";
+  $sql = "Select id, lat, lng, address, classification, analyzed, call_url FROM bat_calls WHERE verified = 1";
 
   /////HEADER: Parameters for API
 
@@ -97,7 +97,7 @@
 
   $stmt->execute();
 
-  $stmt->bind_result($id, $lat, $lng, $address, $classification, $call_url);
+  $stmt->bind_result($id, $lat, $lng, $address, $classification, $analyzed, $call_url);
 
   while($stmt->fetch()){
 
@@ -113,6 +113,7 @@
      $batCall->lat = $lat;
      $batCall->lng = $lng;
      $batCall->species = $classification;
+     $batCall->analyzed = $analyzed;
      $batCall->url = "https://batidentification.com/" . $call_url;
      array_push($batCalls, $batCall);
 
