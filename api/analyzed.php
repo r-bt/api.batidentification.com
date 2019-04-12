@@ -2,9 +2,9 @@
 
   require_once("server.php");
   require_once("../libraries/dbconnect.php");
-  require_once("../libraries/environment.php");
 
-  $dir = $batidentification . 'bat_calls/';
+  $rootDir = explode('api.batidentification', __DIR__)[0];
+  $dir = $rootDir . $config['bat_calls'];
 
   if(!$server->verifyResourceRequest(OAuth2\Request::createFromGlobals())){
     $server->getResponse()->send();
@@ -49,8 +49,8 @@
 
         if($call_url != NULL){
 
-          $newSpectrogram = $batidentification . $call_url . '/spectrogram.' . pathinfo($_FILES['spectrogram']['name'], PATHINFO_EXTENSION);
-          $newTimeExpansion = $batidentification . $call_url . '/time_expansion.' . pathinfo($_FILES['time_expansion']['name'], PATHINFO_EXTENSION);
+          $newSpectrogram = $dir . $call_url . '/spectrogram.' . pathinfo($_FILES['spectrogram']['name'], PATHINFO_EXTENSION);
+          $newTimeExpansion = $dir . $call_url . '/time_expansion.' . pathinfo($_FILES['time_expansion']['name'], PATHINFO_EXTENSION);
 
           if(move_uploaded_file($_FILES['spectrogram']['tmp_name'], $newSpectrogram)){
 

@@ -109,7 +109,7 @@
 
   $rootDir = explode('api.batidentification', __DIR__)[0];
   $folderName = uniqid();
-  $uploadDir = $rootDir . $config['bat_calls'] . $folderName . '/';
+  $uploadDir = $rootDir . $config['bat_calls'] . "bat_calls/" . $folderName . '/';
   while (file_exists($uploadDir) || is_dir($uploadDir)) {
     $folderName = uniqid();
     $uploadDir = $rootDir . $config["bat_calls"] . $folderName . '/';

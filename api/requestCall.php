@@ -5,10 +5,11 @@
 
   if(!$server->verifyResourceRequest(OAuth2\Request::createFromGlobals())){
     $server->getResponse()->send();
+    echo('{"error": "access_token", "error_description":"The access token provided is invalid"}');
     die;
   }
 
-  $sql = "SELECT id, call_url FROM bat_calls WHERE analysing_id IS NULL AND analyzed != true";
+  $sql = "SELECT id, call_url FROM bat_calls WHERE analysing_id IS NULL AND analyzed != true AND verified = 1";
   $results = $connection->query($sql);
   if($results->num_rows > 0){
 
