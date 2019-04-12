@@ -21,8 +21,10 @@
     $stmt->execute();
     $stmt->close();
 
+    $extension = pathinfo($_SERVER['SERVER_NAME'], PATHINFO_EXTENSION);
+
     $call_to_return = array(
-      'call_url' => 'https://batidentification.loc/' . $row['call_url'],
+      'call_url' => 'https://batidentification.' . $extension . '/' . $row['call_url'],
       'identifier' => $identifer
     );
 
