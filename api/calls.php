@@ -41,7 +41,7 @@
 
   $a_params[] = &$paramType;
 
-  $sql = "Select id, lat, lng, address, classification, call_url FROM bat_calls";
+  $sql = "Select id, lat, lng, address, classification, call_url FROM bat_calls WHERE verified = 1";
 
   /////HEADER: Parameters for API
 
@@ -102,6 +102,10 @@
   while($stmt->fetch()){
 
      $classification = ucwords(str_replace("_", " ", $classification));
+
+     if($classification == ""){
+       $classification = "Not identified";
+     }
 
      $batCall = new stdClass();
      $batCall->id = $id;

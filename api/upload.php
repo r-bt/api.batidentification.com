@@ -39,7 +39,7 @@
     if($mtype == "audio/x-wav"){
       return TRUE;
     }
-    return TRUE;
+    return FALSE;
 
   }
 
