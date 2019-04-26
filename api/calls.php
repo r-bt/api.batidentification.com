@@ -8,17 +8,26 @@
 
   $modified = false;
 
-  function modifySQL(string $inital, string $append, array $params){
+  function modifySQL(string $inital, string $append, array $params = []){
 
     global $paramType, $a_params, $modified;
-    $modified = true;
     $paramsInQuery = "";
+
+    if($params != []){
+      $modified = true;
+    }
 
     $sql = $inital . ' ' . (strpos($inital, "WHERE") == false ? "WHERE " : "AND ") . $append;
 
     for($i = 0; $i < count($params); $i++){
 
-      $paramType .= gettype($params[$i])[0];
+      $type = gettype($params[$i])[0];
+
+      if($type == "N"){
+        $type = "s";
+      }
+
+      $paramType .= $type;
       $a_params[] = &$params[$i];
       $paramsInQuery .= ($i == 0 ? "?" : ",?");
 
@@ -41,7 +50,7 @@
 
   $a_params[] = &$paramType;
 
-  $sql = "Select id, lat, lng, address, classification, analyzed, call_url FROM bat_calls";
+  $sql = "Select id, lat, lng, address, classification, analyzed, date_recorded, call_url FROM bat_calls";
 
   /////HEADER: Parameters for API
 
@@ -57,9 +66,22 @@
       //Get if specific species have been set
   if(isset($_GET['species'])){
 
+    $special = "";
+
     $species = array_map('trim', explode(',', $_GET['species']));
 
-    $sql = modifySQL($sql, "classification IN ({%1%})", $species);
+    $index = array_search("not_identified", $species);
+
+    if($index > -1){
+      array_splice($species, $index);
+      $special = "classification IS NULL OR ";
+    }
+
+    if(sizeof($species) > 0){
+      $sql = modifySQL($sql, "{$special}classification IN ({%1%})", $species);
+    }else{
+      $sql = modifySQL($sql, "classification IS NUll");
+    }
 
   }
 
@@ -97,7 +119,7 @@
 
   $stmt->execute();
 
-  $stmt->bind_result($id, $lat, $lng, $address, $classification, $analyzed, $call_url);
+  $stmt->bind_result($id, $lat, $lng, $address, $classification, $analyzed, $date_call_recorded, $call_url);
 
   while($stmt->fetch()){
 
@@ -114,6 +136,7 @@
      $batCall->lng = $lng;
      $batCall->species = $classification;
      $batCall->analyzed = $analyzed;
+     $batCall->date_recorded = $date_call_recorded;
      $batCall->url = "https://batidentification.com/" . $call_url;
      array_push($batCalls, $batCall);
 
