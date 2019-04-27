@@ -66,7 +66,7 @@
       //Get if specific species have been set
   if(isset($_GET['species'])){
 
-    $special = "";
+    $special = "(";
 
     $species = array_map('trim', explode(',', $_GET['species']));
 
@@ -74,11 +74,11 @@
 
     if($index > -1){
       array_splice($species, $index);
-      $special = "classification IS NULL OR ";
+      $special = "(classification IS NULL OR ";
     }
 
     if(sizeof($species) > 0){
-      $sql = modifySQL($sql, "{$special}classification IN ({%1%})", $species);
+      $sql = modifySQL($sql, "{$special}classification IN ({%1%}))", $species);
     }else{
       $sql = modifySQL($sql, "classification IS NUll");
     }
@@ -88,7 +88,7 @@
     //If location bounds set
   if(isset($_GET['lat']) && isset($_GET['lon']) && isset($_GET['radius'])){
 
-    $preparedParams = [$_GET['lat'], $_GET['lon'], $_GET['lat'], $_GET['radius']];
+    $preparedParams = [$_GET['lat'], $_GET['lat'], $_GET['lon'], $_GET['radius']];
 
     for($i = 0; $i < count($preparedParams); $i++){
       $preparedParams[$i] = floatval($preparedParams[$i]);
@@ -98,14 +98,12 @@
     }
 
     $sql = modifySQL($sql, "
-        ( 3959
-          * acos( cos( radians(?) )
-                  * cos(  radians( lat )   )
-                  * cos(  radians( lng ) - radians(?) )
-                + sin( radians(?) )
-                  * sin( radians( lat ) )
-                )
-        ) < ?", $preparedParams);
+      (
+        acos(sin(lat * 0.0175) * sin(? * 0.0175)
+           + cos(lat * 0.0175) * cos(? * 0.0175) *
+             cos((? * 0.0175) - (lng * 0.0175))
+           ) * 6371 <= ?
+      )", $preparedParams);
 
   }
 
